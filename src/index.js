@@ -6,7 +6,7 @@ import connectDB from './db/index.js';
 // require
 
 dotenv.config({
-    path: './env'
+    path: './.env'
 });
 //second approach to connect db
 connectDB()
