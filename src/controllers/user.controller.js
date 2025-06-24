@@ -3,7 +3,7 @@ import { ApiError } from '../utils/apiError.js';
 import { User } from '../models/user.models.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
-
+import path from 'path';    
 
 
 const registerUser = asyncHandler(async (req, res) =>{
@@ -50,9 +50,15 @@ const coverImageLocalPath = req.files?.coverImage[0]?.path;
 if(!avatarLocalPath){
     throw new ApiError(400, "Avatar image is required");
 }
+// console.log("Files received in req.files:", req.files);
+// console.log("Avatar local path:", avatarLocalPath);
+const normalizedAvatarPath = path.resolve(avatarLocalPath);
+const normalizedCoverImagePath = coverImageLocalPath ? path.resolve(coverImageLocalPath) : "";
 
-const avatar = await uploadOnCloudinary(avatarLocalPath)
-const coverImage =  await uploadOnCloudinary(coverImageLocalPath);  
+const avatar = await uploadOnCloudinary(normalizedAvatarPath);
+const coverImage = coverImageLocalPath ? await uploadOnCloudinary(normalizedCoverImagePath) : null;
+// const avatar = await uploadOnCloudinary(avatarLocalPath)
+// const coverImage =  await uploadOnCloudinary(coverImageLocalPath);  
 if(!avatar){
     throw new ApiError(500, "Failed to upload avatar image");
 }
